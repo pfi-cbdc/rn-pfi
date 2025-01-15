@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { storage } from '../utils/storage';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -9,11 +10,18 @@ export default function Splash() {
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(async () => {
+    const checkAuthAndRedirect = async () => {
+      const isAuthenticated = await storage.isAuthenticated();
       await SplashScreen.hideAsync();
-      router.replace('/(auth)/phone');
-    }, 2000);
+      
+      if (isAuthenticated) {
+        router.replace('/(tabs)'); // Replace with your main app route
+      } else {
+        router.replace('/(auth)/phone');
+      }
+    };
 
+    const timer = setTimeout(checkAuthAndRedirect, 2000);
     return () => clearTimeout(timer);
   }, []);
 
