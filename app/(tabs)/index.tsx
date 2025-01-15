@@ -1,58 +1,34 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import ENV from '../../config/env';
 import { storage } from '../../utils/storage';
 
 export default function HomeScreen() {
   const router = useRouter();
-
-  const handleLogout = async () => {
-    console.log(' Logout button pressed');
-    
-    try {
-      console.log(' Retrieving stored token');
-      const token = await storage.getToken();
-      
-      if (!token) {
-        console.log(' No token found, redirecting to login');
-        router.replace('/(auth)/phone');
-        return;
-      }
-
-      console.log(' Making logout request to:', `${ENV.API_URL}/users/logout`);
-      const response = await fetch(`${ENV.API_URL}/users/logout`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      console.log(' Logout response status:', response.status);
-      
-      if (response.ok) {
-        console.log(' Logout successful, clearing token');
-        await storage.removeToken();
-        console.log(' Token cleared successfully');
-        console.log(' Navigating to login screen');
-        router.replace('/(auth)/phone');
-      } else {
-        const errorData = await response.json();
-        console.log(' Logout failed:', errorData);
-        Alert.alert('Error', 'Failed to logout. Please try again.');
-      }
-    } catch (error) {
-      console.error(' Logout Error:', error);
-      Alert.alert('Error', 'Something went wrong while logging out');
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hi</Text>
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Logout</Text>
-      </TouchableOpacity>
+      <Text style={styles.text}>Hi v</Text>
+      <View style={styles.navbar}>
+        <TouchableOpacity style={styles.navButton} onPress={() => router.replace('/home')}>
+          <Text style={styles.navText}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={() => router.replace('/bills')}>
+          <Text style={styles.navText}>Bills</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={() => router.replace('/products')}>
+          <Text style={styles.navText}>Products</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={() => router.replace('/parties')}>
+          <Text style={styles.navText}>Parties</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton} onPress={() => {
+          console.log('Switching to more screen');
+          router.replace('/(more)');
+        }}>
+          <Text style={styles.navText}>More</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -69,13 +45,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  button: {
+  navbar: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    justifyContent: 'space-around',
+    backgroundColor: '#f8f8f8',
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#e7e7e7',
+  },
+  navButton: {
+    alignItems: 'center',
     backgroundColor: 'black',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
   },
-  buttonText: {
+  navText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '500',
