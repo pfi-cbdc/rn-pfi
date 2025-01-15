@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = 'http://192.168.102.191:5002/api';
 
@@ -28,15 +27,15 @@ export default function PhoneScreen() {
 
     try {
       setLoading(true);
-      console.log('🔄 Making API request to:', `${API_URL}/users`);
-      console.log('📤 Request payload:', { phoneNumber });
+      console.log('🔄 Making API request to:', `${API_URL}/users/send-otp`);
+      console.log('📤 Request payload:', { phoneNumber: '+91' + phoneNumber });
 
-      const response = await fetch(`${API_URL}/users`, {
+      const response = await fetch(`${API_URL}/users/send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ phoneNumber }),
+        body: JSON.stringify({ phoneNumber: '+91' + phoneNumber }),
       });
 
       console.log('📥 Response status:', response.status);
@@ -44,21 +43,22 @@ export default function PhoneScreen() {
       console.log('📥 Response data:', data);
       
       if (response.ok) {
-        console.log('✅ Login successful, storing token');
-        await AsyncStorage.setItem('userToken', data.token);
-        console.log('✅ Token stored successfully');
-        Alert.alert('Success', data.message, [
+        console.log('✅ OTP sent successfully');
+        Alert.alert('Success', 'Verification code sent to your phone number', [
           {
             text: 'OK',
             onPress: () => {
-              console.log('➡️ Navigating to tabs');
-              router.replace('/(tabs)');
+              console.log('➡️ Navigating to verify screen');
+              router.push({
+                pathname: '/verify',
+                params: { phoneNumber: '+91' + phoneNumber }
+              });
             },
           },
         ]);
       } else {
         console.log('❌ API error:', data.error);
-        Alert.alert('Error', data.error || 'Something went wrong');
+        Alert.alert('Error', data.error || 'Failed to send verification code');
       }
     } catch (error) {
       console.error('❌ API Error:', error);
@@ -75,25 +75,30 @@ export default function PhoneScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Enter Phone Number</Text>
-      <TextInput
-        style={styles.input}
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        placeholder="Enter your phone number"
-        keyboardType="phone-pad"
-        maxLength={10}
-        editable={!loading}
-      />
+      <View style={styles.inputContainer}>
+        <Text style={styles.prefix}>+91</Text>
+        <TextInput
+          style={styles.input}
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          placeholder="Enter your phone number"
+          keyboardType="phone-pad"
+          maxLength={10}
+          editable={!loading}
+        />
+      </View>
       <TouchableOpacity 
         style={[
           styles.button,
-          phoneNumber.length >= 10 ? styles.buttonActive : styles.buttonInactive,
+          phoneNumber.length === 10 ? styles.buttonActive : styles.buttonInactive,
           loading && styles.buttonLoading,
         ]}
         onPress={handleSubmit}
-        disabled={phoneNumber.length < 10 || loading}
+        disabled={phoneNumber.length !== 10 || loading}
       >
-        <Text style={styles.buttonText}>{loading ? 'Please wait...' : 'Continue'}</Text>
+        <Text style={styles.buttonText}>
+          {loading ? 'Sending code...' : 'Continue'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -112,13 +117,23 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  prefix: {
+    fontSize: 16,
+    marginRight: 8,
+    color: '#666',
+  },
   input: {
+    flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
-    marginBottom: 20,
   },
   button: {
     padding: 15,
