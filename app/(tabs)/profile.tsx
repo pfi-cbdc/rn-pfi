@@ -50,7 +50,15 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
+      
+      <TouchableOpacity 
+        style={styles.profileButton} 
+        onPress={() => router.push('/userDetails')}
+      >
+        <Text style={styles.buttonText}>User Profile</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
     </View>
@@ -66,13 +74,24 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    marginBottom: 20,
+    marginBottom: 30,
   },
-  button: {
+  profileButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginBottom: 15,
+    width: '80%',
+    alignItems: 'center',
+  },
+  logoutButton: {
     backgroundColor: '#ff4444',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
+    width: '80%',
+    alignItems: 'center',
   },
   buttonText: {
     color: 'white',
