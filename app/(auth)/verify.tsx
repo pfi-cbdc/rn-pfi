@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const API_URL = 'http://192.168.102.191:5002/api';
+import ENV from '../../config/env';
+import { storage } from '../../utils/storage';
 
 export default function VerifyScreen() {
   const [code, setCode] = useState('');
@@ -28,10 +27,10 @@ export default function VerifyScreen() {
 
     try {
       setLoading(true);
-      console.log('🔄 Making verify request to:', `${API_URL}/users/verify-otp`);
+      console.log('🔄 Making verify request to:', `${ENV.API_URL}/users/verify-otp`);
       console.log('📤 Request payload:', { phoneNumber, code });
 
-      const response = await fetch(`${API_URL}/users/verify-otp`, {
+      const response = await fetch(`${ENV.API_URL}/users/verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +44,7 @@ export default function VerifyScreen() {
 
       if (response.ok) {
         console.log('✅ Verification successful');
-        await AsyncStorage.setItem('userToken', data.token);
+        await storage.setToken(data.token);
         console.log('✅ Token stored successfully');
         Alert.alert('Success', 'Phone number verified successfully', [
           {
@@ -105,30 +104,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'white',
     justifyContent: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 8,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 20,
+    marginBottom: 32,
     textAlign: 'center',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    borderColor: '#ddd',
     padding: 15,
-    fontSize: 24,
+    fontSize: 16,
+    borderRadius: 8,
+    backgroundColor: 'white',
     marginBottom: 20,
-    textAlign: 'center',
-    letterSpacing: 8,
   },
   button: {
     padding: 15,
@@ -136,17 +133,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonActive: {
-    backgroundColor: '#000',
+    backgroundColor: '#007AFF',
   },
   buttonInactive: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#B0B0B0',
   },
   buttonLoading: {
-    opacity: 0.7,
+    backgroundColor: '#4DA1FF',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });

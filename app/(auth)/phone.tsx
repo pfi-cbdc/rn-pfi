@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import ENV from '../../config/env';
 
-const API_URL = 'http://192.168.102.191:5002/api';
+const API_URL = ENV.API_URL;
 
 export default function PhoneScreen() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -57,15 +58,12 @@ export default function PhoneScreen() {
           },
         ]);
       } else {
-        console.log('❌ API error:', data.error);
+        console.log('❌ Failed to send OTP:', data.error);
         Alert.alert('Error', data.error || 'Failed to send verification code');
       }
     } catch (error) {
-      console.error('❌ API Error:', error);
-      Alert.alert(
-        'Connection Error',
-        'Unable to connect to the server. Please check your internet connection and try again.'
-      );
+      console.error('❌ Error:', error);
+      Alert.alert('Error', 'Something went wrong');
     } finally {
       console.log('🔄 Request completed');
       setLoading(false);
@@ -75,19 +73,19 @@ export default function PhoneScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Enter Phone Number</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.prefix}>+91</Text>
-        <TextInput
-          style={styles.input}
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          placeholder="Enter your phone number"
-          keyboardType="phone-pad"
-          maxLength={10}
-          editable={!loading}
-        />
-      </View>
-      <TouchableOpacity 
+      <Text style={styles.subtitle}>
+        We'll send you a verification code
+      </Text>
+      <TextInput
+        style={styles.input}
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+        placeholder="Enter your phone number"
+        keyboardType="number-pad"
+        maxLength={10}
+        editable={!loading}
+      />
+      <TouchableOpacity
         style={[
           styles.button,
           phoneNumber.length === 10 ? styles.buttonActive : styles.buttonInactive,
@@ -97,7 +95,7 @@ export default function PhoneScreen() {
         disabled={phoneNumber.length !== 10 || loading}
       >
         <Text style={styles.buttonText}>
-          {loading ? 'Sending code...' : 'Continue'}
+          {loading ? 'Sending...' : 'Send Code'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -108,32 +106,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'white',
     justifyContent: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 8,
     textAlign: 'center',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  prefix: {
+  subtitle: {
     fontSize: 16,
-    marginRight: 8,
     color: '#666',
+    marginBottom: 32,
+    textAlign: 'center',
   },
   input: {
-    flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    borderColor: '#ddd',
     padding: 15,
     fontSize: 16,
+    borderRadius: 8,
+    backgroundColor: 'white',
+    marginBottom: 20,
   },
   button: {
     padding: 15,
@@ -141,17 +135,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonActive: {
-    backgroundColor: '#000',
+    backgroundColor: '#007AFF',
   },
   buttonInactive: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#B0B0B0',
   },
   buttonLoading: {
-    opacity: 0.7,
+    backgroundColor: '#4DA1FF',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });

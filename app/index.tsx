@@ -11,7 +11,7 @@ export default function Splash() {
   useEffect(() => {
     const timer = setTimeout(async () => {
       await SplashScreen.hideAsync();
-      router.replace('/phone');
+      router.replace('/(auth)/phone');
     }, 2000);
 
     return () => clearTimeout(timer);

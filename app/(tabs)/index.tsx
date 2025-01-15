@@ -1,8 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const API_URL = 'http://192.168.102.191:5002/api';
+import ENV from '../../config/env';
+import { storage } from '../../utils/storage';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -12,16 +11,16 @@ export default function HomeScreen() {
     
     try {
       console.log(' Retrieving stored token');
-      const token = await AsyncStorage.getItem('userToken');
+      const token = await storage.getToken();
       
       if (!token) {
         console.log(' No token found, redirecting to login');
-        router.replace('/phone');
+        router.replace('/(auth)/phone');
         return;
       }
 
-      console.log(' Making logout request to:', `${API_URL}/users/logout`);
-      const response = await fetch(`${API_URL}/users/logout`, {
+      console.log(' Making logout request to:', `${ENV.API_URL}/users/logout`);
+      const response = await fetch(`${ENV.API_URL}/users/logout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -33,10 +32,10 @@ export default function HomeScreen() {
       
       if (response.ok) {
         console.log(' Logout successful, clearing token');
-        await AsyncStorage.removeItem('userToken');
+        await storage.removeToken();
         console.log(' Token cleared successfully');
         console.log(' Navigating to login screen');
-        router.replace('/phone');
+        router.replace('/(auth)/phone');
       } else {
         const errorData = await response.json();
         console.log(' Logout failed:', errorData);
