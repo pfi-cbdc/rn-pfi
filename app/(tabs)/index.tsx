@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import { useEffect, useState } from 'react';
 import { storage } from '../../utils/storage';
 import ENV from '../../config/env';
@@ -39,7 +39,21 @@ export default function HomeScreen() {
   };
 
   const handleHelp = () => {
-    router.push('/(modals)/help');
+    // Format the WhatsApp number (remove any non-numeric characters)
+    const whatsappNumber = ENV.WHATSAPP_NUMBER.replace(/\D/g, '');
+    // Create the WhatsApp URL with a pre-defined message
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hello! I need assistance with PFI app.`;
+    
+    Linking.canOpenURL(whatsappUrl)
+      .then(supported => {
+        if (supported) {
+          return Linking.openURL(whatsappUrl);
+        } else {
+          console.log("WhatsApp is not installed");
+          // You might want to show an alert here
+        }
+      })
+      .catch(err => console.error('Error opening WhatsApp:', err));
   };
 
   return (
