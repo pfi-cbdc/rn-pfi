@@ -58,6 +58,13 @@ export default function ProfileScreen() {
         <Text style={styles.buttonText}>User Profile</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity 
+        style={styles.profileButton} 
+        onPress={() => router.push('/companyDetails')}
+      >
+        <Text style={styles.buttonText}>Company Details</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
