@@ -7,19 +7,16 @@ export default function ProfileScreen() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    console.log(' Logout button pressed');
-    
     try {
-      console.log(' Retrieving stored token');
       const token = await storage.getToken();
       
       if (!token) {
-        console.log(' No token found, redirecting to login');
+        console.log('No token found, redirecting to login');
+        await storage.clearAll();
         router.replace('/(auth)/phone');
         return;
       }
 
-      console.log(' Making logout request to:', `${ENV.API_URL}/users/logout`);
       const response = await fetch(`${ENV.API_URL}/users/logout`, {
         method: 'POST',
         headers: {
@@ -27,22 +24,24 @@ export default function ProfileScreen() {
           'Content-Type': 'application/json',
         },
       });
-
-      console.log(' Logout response status:', response.status);
       
       if (response.ok) {
-        console.log(' Logout successful, clearing token');
-        await storage.removeToken();
-        console.log(' Token cleared successfully');
-        console.log(' Navigating to login screen');
+        await storage.clearAll();
         router.replace('/(auth)/phone');
       } else {
         const errorData = await response.json();
-        console.log(' Logout failed:', errorData);
-        Alert.alert('Error', 'Failed to logout. Please try again.');
+        console.error('Logout failed:', errorData);
+        
+        if (response.status === 401) {
+          // If unauthorized, clear storage and redirect anyway
+          await storage.clearAll();
+          router.replace('/(auth)/phone');
+        } else {
+          Alert.alert('Error', 'Failed to logout. Please try again.');
+        }
       }
     } catch (error) {
-      console.error(' Logout Error:', error);
+      console.error('Logout Error:', error);
       Alert.alert('Error', 'Something went wrong while logging out');
     }
   };
@@ -52,21 +51,24 @@ export default function ProfileScreen() {
       <Text style={styles.title}>Profile</Text>
       
       <TouchableOpacity 
-        style={styles.profileButton} 
+        style={styles.button}
         onPress={() => router.push('/userDetails')}
       >
         <Text style={styles.buttonText}>User Profile</Text>
       </TouchableOpacity>
 
       <TouchableOpacity 
-        style={styles.profileButton} 
+        style={styles.button}
         onPress={() => router.push('/companyDetails')}
       >
         <Text style={styles.buttonText}>Company Details</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Logout</Text>
+      <TouchableOpacity 
+        style={[styles.button, styles.logoutButton]}
+        onPress={handleLogout}
+      >
+        <Text style={[styles.buttonText, styles.logoutButtonText]}>Logout</Text>
       </TouchableOpacity>
     </View>
   );
@@ -78,30 +80,40 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
+    fontWeight: 'bold',
     marginBottom: 30,
+    color: '#333',
   },
-  profileButton: {
+  button: {
     backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
+    padding: 15,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
     marginBottom: 15,
-    width: '80%',
-    alignItems: 'center',
-  },
-  logoutButton: {
-    backgroundColor: '#ff4444',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    width: '80%',
-    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: '600',
+  },
+  logoutButton: {
+    backgroundColor: '#ff4444',
+    marginTop: 20,
+  },
+  logoutButtonText: {
+    fontWeight: 'bold',
   },
 });
