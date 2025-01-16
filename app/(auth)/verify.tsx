@@ -45,7 +45,8 @@ export default function VerifyScreen() {
       if (response.ok) {
         console.log('✅ Verification successful');
         await storage.setToken(data.token);
-        console.log('✅ Token stored successfully');
+        await storage.setPhone(phoneNumber as string);
+        console.log('✅ Token and phone number stored successfully');
         Alert.alert('Success', 'Phone number verified successfully', [
           {
             text: 'OK',
