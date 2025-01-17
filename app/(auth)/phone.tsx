@@ -11,61 +11,62 @@ export default function PhoneScreen() {
   const router = useRouter();
 
   const handleSubmit = async () => {
-    console.log('🔵 Submit pressed with phone number:', phoneNumber);
-
     if (!phoneNumber.trim()) {
-      console.log('❌ Empty phone number');
       Alert.alert('Error', 'Please enter a phone number');
       return;
     }
 
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
-      console.log('❌ Invalid phone number format:', phoneNumber);
       Alert.alert('Error', 'Please enter a valid 10-digit phone number');
       return;
     }
 
     try {
       setLoading(true);
-      console.log('🔄 Making API request to:', `${API_URL}/users/send-otp`);
-      console.log('📤 Request payload:', { phoneNumber: '+91' + phoneNumber });
+      const url = `${API_URL}/users/send-otp`;
+      const payload = { phoneNumber: '+91' + phoneNumber };
 
-      const response = await fetch(`${API_URL}/users/send-otp`, {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ phoneNumber: '+91' + phoneNumber }),
+        body: JSON.stringify(payload),
       });
 
-      console.log('📥 Response status:', response.status);
       const data = await response.json();
-      console.log('📥 Response data:', data);
-      
-      if (response.ok) {
-        console.log('✅ OTP sent successfully');
-        Alert.alert('Success', 'Verification code sent to your phone number', [
-          {
-            text: 'OK',
-            onPress: () => {
-              console.log('➡️ Navigating to verify screen');
-              router.push({
-                pathname: '/verify',
-                params: { phoneNumber: '+91' + phoneNumber }
-              });
-            },
-          },
-        ]);
-      } else {
-        console.log('❌ Failed to send OTP:', data.error);
-        Alert.alert('Error', data.error || 'Failed to send verification code');
+
+      if (!response.ok) {
+        Alert.alert('Request Failed', JSON.stringify({
+          status: response.status,
+          error: data.error || 'Unknown error',
+          message: data.message,
+          url: url
+        }, null, 2));
+        return;
       }
+
+      Alert.alert('Success', 'Verification code sent to your phone number', [
+        {
+          text: 'OK',
+          onPress: () => {
+            router.push({
+              pathname: '/verify',
+              params: { phoneNumber: '+91' + phoneNumber }
+            });
+          },
+        },
+      ]);
     } catch (error) {
-      console.error('❌ Error:', error);
-      Alert.alert('Error', 'Something went wrong');
+      console.error('Error details:', error);
+      // Show network or parsing error details
+      Alert.alert('Error Details', JSON.stringify({
+        type: error instanceof Error ? error.name : 'Unknown Error',
+        message: error instanceof Error ? error.message : String(error),
+        url: API_URL
+      }, null, 2));
     } finally {
-      console.log('🔄 Request completed');
       setLoading(false);
     }
   };
