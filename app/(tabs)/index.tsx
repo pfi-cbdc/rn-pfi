@@ -14,46 +14,51 @@ export default function HomeScreen() {
 
   const loadCompanyDetails = async () => {
     try {
+      console.log('📡 Fetching company details...');
       const token = await storage.getToken();
       const response = await fetch(`${ENV.API_URL}/company/details`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setBrandName(data.brandName);
+        console.log('✅ Company details loaded successfully:', data);
+      } else {
+        console.log('❌ Failed to fetch company details:', response.status);
       }
     } catch (error) {
-      console.error('Error loading company details:', error);
+      console.error('⚠️ Error loading company details:', error);
     }
   };
 
   const handleSell = () => {
+    console.log('🛒 Navigating to Sell page...');
     router.push('/(modals)/sell');
   };
 
   const handlePurchase = () => {
+    console.log('📦 Navigating to Purchase page...');
     router.push('/(modals)/purchase');
   };
 
   const handleHelp = () => {
-    // Format the WhatsApp number (remove any non-numeric characters)
+    console.log('🤔 Opening WhatsApp support...');
     const whatsappNumber = ENV.WHATSAPP_NUMBER.replace(/\D/g, '');
-    // Create the WhatsApp URL with a pre-defined message
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hello! I need assistance with PFI app.`;
-    
+
     Linking.canOpenURL(whatsappUrl)
       .then(supported => {
         if (supported) {
+          console.log('✅ WhatsApp is supported. Opening...');
           return Linking.openURL(whatsappUrl);
         } else {
-          console.log("WhatsApp is not installed");
-          // You might want to show an alert here
+          console.log('❌ WhatsApp is not installed or URL is unsupported.');
         }
       })
-      .catch(err => console.error('Error opening WhatsApp:', err));
+      .catch(err => console.error('⚠️ Error opening WhatsApp:', err));
   };
 
   return (

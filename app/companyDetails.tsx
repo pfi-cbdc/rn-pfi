@@ -31,12 +31,15 @@ export default function CompanyDetailsScreen() {
   }, []);
 
   const loadPhoneNumber = async () => {
+    console.log('🔑 Loading phone number...');
     const phone = await storage.getPhone();
     setPhoneNumber(phone);
+    console.log('🔑 Phone number loaded:', phone);
   };
 
   const loadCompanyDetails = async () => {
     try {
+      console.log('🔑 Loading company details...');
       const token = await storage.getToken();
       
       // Fetch company details from API
@@ -49,14 +52,16 @@ export default function CompanyDetailsScreen() {
       if (response.ok) {
         const data = await response.json();
         setCompanyDetails(data);
+        console.log('🔑 Company details loaded:', data);
       }
     } catch (error) {
-      console.error('Error loading company details:', error);
+      console.error('⚠️ Error loading company details:', error);
     }
   };
 
   const handleSave = async () => {
     try {
+      console.log('🔑 Saving company details...');
       const token = await storage.getToken();
       const response = await fetch(`${ENV.API_URL}/company/details`, {
         method: 'POST',
@@ -69,11 +74,13 @@ export default function CompanyDetailsScreen() {
 
       if (response.ok) {
         Alert.alert('Success', 'Company details saved successfully');
+        console.log('🔑 Company details saved successfully');
       } else {
         Alert.alert('Error', 'Failed to save company details');
+        console.error('⚠️ Failed to save company details');
       }
     } catch (error) {
-      console.error('Error saving company details:', error);
+      console.error('⚠️ Error saving company details:', error);
       Alert.alert('Error', 'Something went wrong while saving');
     }
   };

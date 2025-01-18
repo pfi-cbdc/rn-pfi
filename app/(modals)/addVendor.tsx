@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
@@ -18,7 +18,8 @@ export default function VendorsScreen() {
   const router = useRouter();
   
   useEffect(() => {
-      const fetchVendors = async () => {
+    const fetchVendors = async () => {
+      console.log("🚀 Fetching vendors...");
       const token = await storage.getToken();
       try {
         const response = await fetch(`${ENV.API_URL}/company/all`, {
@@ -28,7 +29,7 @@ export default function VendorsScreen() {
             },
         });
         const data = await response.json();
-        console.log('Successfully fetched vendors');
+        console.log('Successfully fetched vendors:');
         setVendors(data);
         setFilteredVendors(data);
       } catch (error) {
@@ -40,8 +41,10 @@ export default function VendorsScreen() {
   }, []);
 
   useEffect(() => {
+    console.log("🔍 Filtering vendors with search term:", search);
     const vendorsArray = Object.values(vendors);
     if (vendorsArray.length === 0) {
+      console.log("⚠️ No vendors available to filter.");
       setFilteredVendors([]);
       return;
     }
@@ -50,10 +53,12 @@ export default function VendorsScreen() {
         vendor?.brandName?.toLowerCase().includes(search?.toLowerCase() || '') ||
         vendor?.companyName?.toLowerCase().includes(search?.toLowerCase() || '')
     );
+    console.log("✅ Filtered vendors:");
     setFilteredVendors(filtered);
   }, [search, vendors]);
 
   const handleSelectVendor = (vendor: Vendor) => {
+    console.log("🛒 Vendor selected:", vendor);
     router.replace({
       pathname: '/purchase',
       params: { selectedVendor: JSON.stringify(vendor) },

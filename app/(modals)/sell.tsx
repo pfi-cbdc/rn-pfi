@@ -5,6 +5,16 @@ import { Stack, useRouter } from 'expo-router';
 export default function SellScreen() {
   const router = useRouter();
 
+  const handleAddProducts = () => {
+    console.log('🛒 Navigating to Add Products screen...');
+    router.push('/(modals)/addProduct');
+  };
+
+  const handleCreate = () => {
+    console.log('✅ Create button clicked. Proceeding with the action...');
+    // Add logic here for the "Create" button functionality.
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <Stack.Screen
@@ -29,16 +39,13 @@ export default function SellScreen() {
         </View>
 
         {/* Add Products Button */}
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => router.push('/(modals)/addProduct')}
-        >
+        <TouchableOpacity style={styles.addButton} onPress={handleAddProducts}>
           <Text style={styles.addButtonText}>+ Add Products</Text>
         </TouchableOpacity>
       </View>
 
       {/* Create Button */}
-      <TouchableOpacity style={styles.createButton}>
+      <TouchableOpacity style={styles.createButton} onPress={handleCreate}>
         <Text style={styles.createButtonText}>Create</Text>
       </TouchableOpacity>
     </SafeAreaView>

@@ -8,15 +8,17 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     try {
+      console.log('🚪 Logging out...');
       const token = await storage.getToken();
-      
+
       if (!token) {
-        console.log('No token found, redirecting to login');
+        console.log('⚠️ No token found. Redirecting to login...');
         await storage.clearAll();
         router.replace('/(auth)/phone');
         return;
       }
 
+      console.log('📡 Sending logout request...');
       const response = await fetch(`${ENV.API_URL}/users/logout`, {
         method: 'POST',
         headers: {
@@ -24,47 +26,54 @@ export default function ProfileScreen() {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (response.ok) {
+        console.log('✅ Logout successful. Clearing storage...');
         await storage.clearAll();
         router.replace('/(auth)/phone');
       } else {
         const errorData = await response.json();
-        console.error('Logout failed:', errorData);
-        
+        console.error('❌ Logout failed:', errorData);
+
         if (response.status === 401) {
-          // If unauthorized, clear storage and redirect anyway
+          console.log('⚠️ Unauthorized. Clearing storage and redirecting...');
           await storage.clearAll();
           router.replace('/(auth)/phone');
         } else {
-          Alert.alert('Error', 'Failed to logout. Please try again.');
+          Alert.alert('❗ Error', 'Failed to logout. Please try again.');
         }
       }
     } catch (error) {
-      console.error('Logout Error:', error);
-      Alert.alert('Error', 'Something went wrong while logging out');
+      console.error('⚠️ Logout Error:', error);
+      Alert.alert('❗ Error', 'Something went wrong while logging out');
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
-      
-      <TouchableOpacity 
+
+      <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push('/userDetails')}
+        onPress={() => {
+          console.log('👤 Navigating to User Profile...');
+          router.push('/userDetails');
+        }}
       >
         <Text style={styles.buttonText}>User Profile</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push('/companyDetails')}
+        onPress={() => {
+          console.log('🏢 Navigating to Company Details...');
+          router.push('/companyDetails');
+        }}
       >
         <Text style={styles.buttonText}>Company Details</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.button, styles.logoutButton]}
         onPress={handleLogout}
       >

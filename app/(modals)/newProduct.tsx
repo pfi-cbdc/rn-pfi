@@ -17,6 +17,7 @@ export default function NewProduct() {
   const unitOptions = ['Pieces', 'Kilograms', 'Liters', 'Dozens'];
 
   const handleImagePicker = async () => {
+    console.log("🚀 Opening image picker...");
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: "images",
       allowsEditing: true,
@@ -24,13 +25,17 @@ export default function NewProduct() {
     });
 
     if (!result.canceled) {
+      console.log("📷 Image selected:", result.assets[0].uri);
       setImage(result.assets[0].uri);
+    } else {
+      console.log("❌ Image selection canceled.");
     }
   };
 
   const handleAddProduct = async () => {
     const token = await storage.getToken();
     if (!productName || !sellingPrice || !units) {
+      console.log("⚠️ Missing required fields!");
       Alert.alert('Error', 'Please fill in all the required fields.');
       return;
     }
@@ -43,8 +48,9 @@ export default function NewProduct() {
       ...(image && { image }),
     };
 
+    console.log("🛒 Adding new product:");
+
     try {
-      console.log(newProduct);
       const response = await fetch(`${ENV.API_URL}/sell/addProduct`, {
         method: 'POST',
         headers: { 
@@ -53,8 +59,9 @@ export default function NewProduct() {
         },
         body: JSON.stringify(newProduct),
       });
-      console.log("Done");
+      
       if (response.ok) {
+        console.log("✅ Product added successfully!");
         Alert.alert('Success', 'Product added successfully!');
         setProductName('');
         setSellingPrice('');
@@ -62,9 +69,11 @@ export default function NewProduct() {
         setDescription('');
         setImage(null);
       } else {
+        console.log("❌ Failed to add product.");
         Alert.alert('Error', 'Failed to add product. Please try again.');
       }
     } catch (error) {
+      console.error("🔥 Error occurred while adding product:", error);
       Alert.alert('Error', 'An error occurred. Please try again.');
     }
   };
@@ -119,6 +128,7 @@ export default function NewProduct() {
                   key={unit}
                   style={styles.unitOption}
                   onPress={() => {
+                    console.log(`📦 Unit selected: ${unit}`);
                     setUnits(unit);
                     setShowUnitModal(false);
                   }}

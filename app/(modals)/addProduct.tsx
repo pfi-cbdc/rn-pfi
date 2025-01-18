@@ -18,6 +18,7 @@ export default function AddProductList() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      console.log("🔄 Fetching products...");
       try {
         const token = await storage.getToken();
         const response = await fetch(`${ENV.API_URL}/sell/getProducts`, {
@@ -28,12 +29,16 @@ export default function AddProductList() {
         });
         if (response.ok) {
           const data = await response.json();
+          console.log("✅ Products fetched:");
           setProducts(data);
+        } else {
+          console.log("❌ Failed to fetch products");
         }
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
         setLoading(false);
+        console.log("⏳ Finished loading products.");
       }
     };
 
@@ -63,7 +68,7 @@ export default function AddProductList() {
           renderItem={({ item }) => (
             <View style={styles.product}>
               <Text style={styles.productText}>{item.productName}</Text>
-              <Text style={styles.productText}>{item.sellingPrice}</Text>
+              <Text style={styles.productText}>₹{item.sellingPrice}</Text>
             </View>
           )}
           keyExtractor={(item) => item.id.toString()}
@@ -71,7 +76,10 @@ export default function AddProductList() {
       )}
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push('/(modals)/newProduct')}
+        onPress={() => {
+          console.log("➕ Navigating to Add New Product page...");
+          router.push('/(modals)/newProduct');
+        }}
       >
         <Text style={styles.addButtonText}>+ Add New Product</Text>
       </TouchableOpacity>

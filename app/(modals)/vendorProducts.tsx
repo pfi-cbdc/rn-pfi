@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -20,20 +20,24 @@ export default function SelectProductScreen() {
 
   const vendorId = (() => {
     try {
+      console.log('🔑 Parsing vendor info:');
       if (vendorInfo) {
         const vendor = JSON.parse(vendorInfo as string);
+        console.log('✅ Parsed vendor:');
         return vendor.id;
       }
     } catch (error) {
-      console.error('Error parsing vendor:', error);
+      console.error('⚠️ Error parsing vendor info:', error);
     }
     return undefined;
   })();
 
   useEffect(() => {
     const getToken = async () => {
+      console.log('🔑 Fetching token...');
       const t = await storage.getToken();
       setToken(t);
+      console.log('✅ Token retrieved:', t);
     };
     getToken();
   }, []);
@@ -42,17 +46,19 @@ export default function SelectProductScreen() {
     const fetchProducts = async () => {
       try {
         if (vendorId && token) {
+          console.log('📡 Fetching products for vendor:');
           const response = await fetch(`${ENV.API_URL}/company/products/${vendorId}`, {
             method: 'GET',
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              'Authorization': `Bearer ${token}`,
+            },
           });
           const data = await response.json();
           setProducts(data);
+          console.log('✅ Products fetched successfully:');
         }
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('❌ Error fetching products:', error);
       } finally {
         setLoading(false);
       }
@@ -61,11 +67,13 @@ export default function SelectProductScreen() {
     if (vendorId && token) {
       fetchProducts();
     } else {
+      console.log('⚠️ Vendor ID or token missing, skipping product fetch.');
       setLoading(false);
     }
   }, [vendorId, token]);
 
   const handleSelectProduct = (product: Product) => {
+    console.log('🛒 Product selected:');
     router.replace({
       pathname: '/purchase',
       params: { selectedProduct: JSON.stringify(product), selectedVendor: vendorInfo },
@@ -73,6 +81,7 @@ export default function SelectProductScreen() {
   };
 
   if (loading) {
+    console.log('⌛ Loading products...');
     return (
       <SafeAreaView style={styles.container}>
         <Text style={styles.loadingText}>Loading Products...</Text>
@@ -81,6 +90,7 @@ export default function SelectProductScreen() {
   }
 
   if (!vendorId) {
+    console.log('⚠️ No valid vendor ID. Redirecting...');
     return (
       <SafeAreaView style={styles.container}>
         <Text style={styles.errorText}>No valid vendor selected. Please try again.</Text>
@@ -97,7 +107,7 @@ export default function SelectProductScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.productItem} onPress={() => handleSelectProduct(item)}>
             <Text style={styles.productText}>
-              {item.productName} - ${item.sellingPrice}
+              {item.productName} - ₹{item.sellingPrice}
             </Text>
           </TouchableOpacity>
         )}

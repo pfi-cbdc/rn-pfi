@@ -28,8 +28,10 @@ export default function Products() {
   const router = useRouter();
 
   const fetchProducts = useCallback(async () => {
+    console.log('🛍️ Fetching products...');
     try {
       const token = await storage.getToken();
+      console.log('🔑 Token retrieved successfully.');
       const response = await fetch(`${ENV.API_URL}/sell/getProducts`, {
         method: 'GET',
         headers: {
@@ -39,20 +41,26 @@ export default function Products() {
       if (response.ok) {
         const data = await response.json();
         setProducts(data);
+        console.log(`✅ Successfully fetched ${data.length} products.`);
+      } else {
+        console.error('❌ Failed to fetch products. Response not OK.');
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error(`⚠️ Error fetching products: ${error}`);
     } finally {
       setLoading(false);
       setRefreshing(false);
+      console.log('⏹️ Finished fetching products.');
     }
   }, []);
 
   useEffect(() => {
+    console.log('📦 Component mounted. Initiating fetch...');
     fetchProducts();
   }, [fetchProducts]);
 
   const onRefresh = () => {
+    console.log('🔄 Refreshing products...');
     setRefreshing(true);
     fetchProducts();
   };
@@ -81,7 +89,7 @@ export default function Products() {
       </View>
 
       {loading ? (
-        <Text style={styles.loadingText}>Loading products...</Text>
+        <Text style={styles.loadingText}>⏳ Loading products...</Text>
       ) : (
         <FlatList
           data={products}
@@ -111,7 +119,10 @@ export default function Products() {
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => router.push('/(modals)/newProduct')}
+        onPress={() => {
+          console.log('➕ Navigating to add new product page...');
+          router.push('/(modals)/newProduct');
+        }}
       >
         <Ionicons name="add" size={24} color="#fff" />
         <Text style={styles.addButtonText}>New Product</Text>
