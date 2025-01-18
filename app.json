@@ -37,8 +37,7 @@
           "resizeMode": "contain",
           "backgroundColor": "#000000"
         }
-      ],
-      "sentry-expo"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
