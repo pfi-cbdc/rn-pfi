@@ -1,13 +1,24 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import ENV from '../../config/env';
+import Checkbox from 'expo-checkbox';
 
 const API_URL = ENV.API_URL;
 
 export default function PhoneScreen() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -19,6 +30,11 @@ export default function PhoneScreen() {
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phoneNumber)) {
       Alert.alert('Error', 'Please enter a valid 10-digit phone number');
+      return;
+    }
+
+    if (!isChecked) {
+      Alert.alert('Error', 'You must accept the terms and conditions');
       return;
     }
 
@@ -38,65 +54,76 @@ export default function PhoneScreen() {
       const data = await response.json();
 
       if (!response.ok) {
-        Alert.alert('Request Failed', JSON.stringify({
-          status: response.status,
-          error: data.error || 'Unknown error',
-          message: data.message,
-          url: url
-        }, null, 2));
+        Alert.alert('Request Failed', JSON.stringify(data, null, 2));
         return;
       }
 
-      Alert.alert('Success', 'Verification code sent to your phone number', [
-        {
-          text: 'OK',
-          onPress: () => {
-            router.push({
-              pathname: '/verify',
-              params: { phoneNumber: '+91' + phoneNumber }
-            });
-          },
-        },
-      ]);
+      setIsNavigating(true);
+      setTimeout(() => {
+        router.push({
+          pathname: '/verify',
+          params: { phoneNumber: '+91' + phoneNumber },
+        });
+      }, 1000);   
     } catch (error) {
-      console.error('Error details:', error);
-      // Show network or parsing error details
-      Alert.alert('Error Details', JSON.stringify({
-        type: error instanceof Error ? error.name : 'Unknown Error',
-        message: error instanceof Error ? error.message : String(error),
-        url: API_URL
-      }, null, 2));
+      Alert.alert('Error', 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
 
+  if (isNavigating) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#D77A61" />
+        <Text style={styles.loaderText}>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Enter Phone Number</Text>
+      <Text style={styles.title}>Are you OK!</Text>
+      <Text style={styles.subtitleHead}>Enter your phone number to find out:</Text>
+      <View style={styles.phoneInputContainer}>
+        <Text style={styles.countryCode}>+91</Text>
+        <TextInput
+          style={styles.phoneInput}
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          placeholder="Enter phone number"
+          keyboardType="number-pad"
+          maxLength={10}
+          editable={!loading}
+        />
+      </View>
       <Text style={styles.subtitle}>
-        We'll send you a verification code
+        *We will send you a 6 digit One Time Password (OTP) to your phone number to verify it belongs to you.
       </Text>
-      <TextInput
-        style={styles.input}
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        placeholder="Enter your phone number"
-        keyboardType="number-pad"
-        maxLength={10}
-        editable={!loading}
-      />
+      <View style={styles.checkboxContainer}>
+        <Checkbox
+          value={isChecked}
+          onValueChange={setIsChecked}
+          color={isChecked ? '#D77A61' : undefined}
+        />
+        <Text style={styles.termsText}>
+          I accept the{' '}
+          <Text style={styles.linkText} onPress={() => Alert.alert('Terms and Conditions')}>
+            Terms and Conditions
+          </Text>
+        </Text>
+      </View>
       <TouchableOpacity
         style={[
           styles.button,
-          phoneNumber.length === 10 ? styles.buttonActive : styles.buttonInactive,
+          phoneNumber.length === 10 && isChecked ? styles.buttonActive : styles.buttonInactive,
           loading && styles.buttonLoading,
         ]}
         onPress={handleSubmit}
-        disabled={phoneNumber.length !== 10 || loading}
+        disabled={phoneNumber.length !== 10 || loading || !isChecked}
       >
         <Text style={styles.buttonText}>
-          {loading ? 'Sending...' : 'Send Code'}
+          {loading ? 'Sending...' : 'Send OTP'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -108,45 +135,98 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
+    backgroundColor: '#F9F5F0',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 16,
+    textAlign: 'center',
+    color: '#000',
+  },
+  greenText: {
+    color: 'green',
+  },
+  redText: {
+    color: 'red',
+  },
+  subtitleHead: {
+    fontSize: 20,
+    color: '#666',
+    marginBottom: 24,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#666',
-    marginBottom: 32,
+    marginBottom: 24,
+    marginEnd: 24,
+    marginStart: 24,
     textAlign: 'center',
   },
-  input: {
+  phoneInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 15,
-    fontSize: 16,
+    borderColor: '#C2A15A',
     borderRadius: 8,
-    backgroundColor: 'white',
+    backgroundColor: '#F9F5F0',
     marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  countryCode: {
+    fontSize: 16,
+    color: '#000',
+    marginRight: 8,
+  },
+  phoneInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#000',
+    paddingVertical: 10,
   },
   button: {
-    padding: 15,
+    padding: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
   buttonActive: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#D77A61',
   },
   buttonInactive: {
-    backgroundColor: '#B0B0B0',
+    backgroundColor: '#E0E0E0',
   },
   buttonLoading: {
-    backgroundColor: '#4DA1FF',
+    backgroundColor: '#F4A261',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F9F5F0',
+  },
+  loaderText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  termsText: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 8,
+  },
+  linkText: {
+    color: '#D77A61',
   },
 });
