@@ -106,11 +106,11 @@ export default function Products() {
           }
           ListFooterComponent={
             <View style={styles.footer}>
-              <Text style={styles.footerTitle}>Batch & Expiry</Text>
+              {/* <Text style={styles.footerTitle}>Batch & Expiry</Text>
               <Text style={styles.footerDescription}>
                 Manage and organize products in Batches for seamless inventory
                 management.
-              </Text>
+              </Text> */}
               <Ionicons name="headset" size={24} color="#007AFF" />
             </View>
           }
