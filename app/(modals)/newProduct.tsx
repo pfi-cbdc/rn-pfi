@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, Image } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert, Image, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import ENV from '../../config/env';
 import { storage } from '../../utils/storage';
-import { Picker } from '@react-native-picker/picker';
 
 export default function NewProduct() {
   const [productName, setProductName] = useState('');
@@ -13,6 +12,9 @@ export default function NewProduct() {
   const [units, setUnits] = useState('Pieces');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState<string | null>(null);
+  const [showUnitModal, setShowUnitModal] = useState(false);
+
+  const unitOptions = ['Pieces', 'Kilograms', 'Liters', 'Dozens'];
 
   const handleImagePicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -93,18 +95,40 @@ export default function NewProduct() {
           onChangeText={setSellingPrice}
           keyboardType="numeric"
         />
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={units}
-            style={styles.picker}
-            onValueChange={(itemValue: any) => setUnits(itemValue)}
+        <TouchableOpacity 
+          style={styles.input}
+          onPress={() => setShowUnitModal(true)}
+        >
+          <Text style={{ color: '#fff' }}>{units}</Text>
+        </TouchableOpacity>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showUnitModal}
+          onRequestClose={() => setShowUnitModal(false)}
+        >
+          <TouchableOpacity 
+            style={styles.modalOverlay}
+            activeOpacity={1} 
+            onPress={() => setShowUnitModal(false)}
           >
-            <Picker.Item label="Pieces" value="Pieces" />
-            <Picker.Item label="Kilograms" value="Kilograms" />
-            <Picker.Item label="Liters" value="Liters" />
-            <Picker.Item label="Dozens" value="Dozens" />
-          </Picker>
-        </View>
+            <View style={styles.modalContent}>
+              {unitOptions.map((unit) => (
+                <TouchableOpacity
+                  key={unit}
+                  style={styles.unitOption}
+                  onPress={() => {
+                    setUnits(unit);
+                    setShowUnitModal(false);
+                  }}
+                >
+                  <Text style={styles.unitText}>{unit}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </TouchableOpacity>
+        </Modal>
         <TextInput
           style={styles.input}
           placeholder="Optional Description"
@@ -140,15 +164,26 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     color: '#fff',
   },
-  pickerContainer: {
-    backgroundColor: '#222',
-    borderRadius: 8,
-    marginVertical: 8,
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  picker: {
+  modalContent: {
+    backgroundColor: '#222',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+  },
+  unitOption: {
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  unitText: {
     color: '#fff',
-    height: 50,
-    width: '100%',
+    fontSize: 16,
+    textAlign: 'center',
   },
   uploadButton: {
     backgroundColor: '#3B82F6',
