@@ -10,8 +10,10 @@ export default function UserDetailsScreen() {
   }, []);
 
   const loadPhoneNumber = async () => {
+    console.log('🔑 Loading phone number...');
     const phone = await storage.getPhone();
     setPhoneNumber(phone);
+    console.log('🔑 Phone number loaded:', phone);
   };
 
   return (

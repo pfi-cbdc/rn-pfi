@@ -29,38 +29,49 @@ export default function Purchase() {
 
   const fetchPurchases = async () => {
     setLoading(true);
+    console.log('🚀 Fetching purchases...');
     try {
       const token = await storage.getToken();
+      console.log('🔑 Retrieved token:', token);
       const response = await fetch(`${ENV.API_URL}/purchase/all`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (!response.ok) {
+        console.error('❌ Failed to fetch purchases. Status:', response.status);
+        return;
+      }
       const data = await response.json();
+      console.log('✅ Purchases fetched successfully:');
       setPurchases(data);
-    } catch (error) {
-      console.error('Failed to fetch purchases:', error);
+    } catch (error: any) {
+      console.error('⚠️ Error fetching purchases:', error.message);
     } finally {
       setLoading(false);
+      console.log('✨ Fetch complete.');
     }
   };
 
   useEffect(() => {
+    console.log('📂 Component mounted. Fetching purchases...');
     fetchPurchases();
   }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
+    console.log('🔄 Refreshing purchases...');
     await fetchPurchases();
     setRefreshing(false);
+    console.log('🔁 Refresh complete.');
   };
 
   const renderPurchaseItem = ({ item }: { item: Purchase }) => (
     <View style={styles.purchaseItem}>
       <View style={styles.purchaseDetails}>
         <Text style={styles.quantityPrice}>
-          Qty: {item.quantity} | ${item.price} per unit | Total: ${item.price * item.quantity}
+          Qty: {item.quantity} | ₹{item.price}
         </Text>
         <Text style={[styles.statusText, getStatusStyle(item.status)]}>
           {item.status}

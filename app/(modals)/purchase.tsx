@@ -29,29 +29,34 @@ export default function PurchaseScreen() {
     if (vendorParam) {
       const vendor = JSON.parse(vendorParam as string) as Vendor;
       setSelectedVendor(vendor);
+      console.log("Vendor selected: 🏢");
     }
 
     if (productParam) {
       const product = JSON.parse(productParam as string) as Product;
       setSelectedProduct(product);
+      console.log("Product selected: 🛍️");
     }
   }, [vendorParam, productParam]);
 
   const handleSelectVendor = () => {
+    console.log("Navigating to Add Vendor screen... 🚶‍♂️");
     router.push('/(modals)/addVendor');
   };
 
   const handleSelectProduct = () => {
     if (selectedVendor) {
+      console.log("Navigating to Vendor Products screen... 📦");
       router.push({
         pathname: '/(modals)/vendorProducts',
         params: { vendorInfo: JSON.stringify(selectedVendor) },
       });
+    } else {
+      console.log("No vendor selected! 🛑");
     }
   };
 
   const handlePurchase = async () => {
-    // I need to add a state of pending, in progress, completed, failed with the purchase as well
     if (selectedProduct && selectedVendor) {
       const purchaseDetails = {
         vendorId: selectedVendor.id,
@@ -59,22 +64,26 @@ export default function PurchaseScreen() {
         quantity,
         unitPrice: selectedProduct.sellingPrice, // Sending unit price instead of total
       };
+      console.log("Attempting to make purchase... 🛒");
       const token = await storage.getToken();
       const response = await fetch(`${ENV.API_URL}/purchase/create`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(purchaseDetails)
+        body: JSON.stringify(purchaseDetails),
       });
-      if(response.ok) {
+      if (response.ok) {
+        console.log("Purchase successful! ✅");
         Alert.alert('Purchase Successful');
         router.push('/(tabs)/purchase');
       } else {
+        console.log("Purchase failed! ❌", await response.text());
         Alert.alert('Error', 'Failed to make purchase');
-        console.log('Failed to make purchase');
       }
+    } else {
+      console.log("No product or vendor selected for purchase! 🚫");
     }
   };
 
@@ -112,7 +121,7 @@ export default function PurchaseScreen() {
         {selectedProduct ? (
           <View style={styles.productDetails}>
             <Text style={styles.vendorText}>
-              {selectedProduct.productName} - ${selectedProduct.sellingPrice}
+              {selectedProduct.productName} - ₹{selectedProduct.sellingPrice}
             </Text>
             <TouchableOpacity style={styles.changeButton} onPress={handleSelectProduct}>
               <Text style={styles.buttonText}>Change Product</Text>
@@ -154,7 +163,7 @@ export default function PurchaseScreen() {
 
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Total Amount</Text>
-            <Text style={styles.totalText}>${totalAmount.toFixed(2)}</Text>
+            <Text style={styles.totalText}>₹{totalAmount.toFixed(2)}</Text>
           </View>
 
           <TouchableOpacity style={styles.purchaseButton} onPress={handlePurchase}>
