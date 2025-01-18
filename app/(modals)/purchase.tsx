@@ -62,7 +62,7 @@ export default function PurchaseScreen() {
         vendorId: selectedVendor.id,
         productId: selectedProduct.id,
         quantity,
-        unitPrice: selectedProduct.sellingPrice, // Sending unit price instead of total
+        totalAmount: selectedProduct.sellingPrice * quantity,
       };
       console.log("Attempting to make purchase... 🛒");
       const token = await storage.getToken();

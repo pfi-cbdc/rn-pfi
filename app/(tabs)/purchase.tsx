@@ -71,7 +71,7 @@ export default function Purchase() {
     <View style={styles.purchaseItem}>
       <View style={styles.purchaseDetails}>
         <Text style={styles.quantityPrice}>
-          Qty: {item.quantity} | ₹{item.price}
+          Qty: {item.quantity} | Unit: ₹{item.price} | Total: ₹{item.quantity * item.price}
         </Text>
         <Text style={[styles.statusText, getStatusStyle(item.status)]}>
           {item.status}
