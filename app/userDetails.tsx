@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import { storage } from '../utils/storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function UserDetailsScreen() {
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
@@ -17,21 +18,26 @@ export default function UserDetailsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>User Details</Text>
-      <View style={styles.detailsCard}>
-        <Text style={styles.label}>Phone Number</Text>
-        <Text style={styles.value}>{phoneNumber || 'Not available'}</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={styles.title}>User Details</Text>
+        <View style={styles.detailsCard}>
+          <Text style={styles.label}>Phone Number</Text>
+          <Text style={styles.value}>{phoneNumber || 'Not available'}</Text>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,

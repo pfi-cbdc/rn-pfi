@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert 
 import { useEffect, useState } from 'react';
 import { storage } from '../utils/storage';
 import ENV from '../config/env';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface CompanyDetails {
   companyName: string;
@@ -90,99 +91,104 @@ export default function CompanyDetailsScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Company Details</Text>
-      
-      <View style={styles.detailsCard}>
-        <Text style={styles.label}>Phone Number</Text>
-        <Text style={styles.value}>{phoneNumber || 'Not available'}</Text>
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container}>
+        <Text style={styles.title}>Company Details</Text>
+        
+        <View style={styles.detailsCard}>
+          <Text style={styles.label}>Phone Number</Text>
+          <Text style={styles.value}>{phoneNumber || 'Not available'}</Text>
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Company Name</Text>
-        <TextInput
-          style={styles.input}
-          value={companyDetails.companyName}
-          onChangeText={(value) => handleInputChange('companyName', value)}
-          placeholder="Enter company name"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Company Name</Text>
+          <TextInput
+            style={styles.input}
+            value={companyDetails.companyName}
+            onChangeText={(value) => handleInputChange('companyName', value)}
+            placeholder="Enter company name"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>GSTIN</Text>
-        <TextInput
-          style={styles.input}
-          value={companyDetails.gstin}
-          onChangeText={(value) => handleInputChange('gstin', value)}
-          placeholder="Enter GSTIN"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>GSTIN</Text>
+          <TextInput
+            style={styles.input}
+            value={companyDetails.gstin}
+            onChangeText={(value) => handleInputChange('gstin', value)}
+            placeholder="Enter GSTIN"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Brand Name</Text>
-        <TextInput
-          style={styles.input}
-          value={companyDetails.brandName}
-          onChangeText={(value) => handleInputChange('brandName', value)}
-          placeholder="Enter brand name"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Brand Name</Text>
+          <TextInput
+            style={styles.input}
+            value={companyDetails.brandName}
+            onChangeText={(value) => handleInputChange('brandName', value)}
+            placeholder="Enter brand name"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email Address</Text>
-        <TextInput
-          style={styles.input}
-          value={companyDetails.email}
-          onChangeText={(value) => handleInputChange('email', value)}
-          placeholder="Enter email address"
-          keyboardType="email-address"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email Address</Text>
+          <TextInput
+            style={styles.input}
+            value={companyDetails.email}
+            onChangeText={(value) => handleInputChange('email', value)}
+            placeholder="Enter email address"
+            keyboardType="email-address"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>PAN</Text>
-        <TextInput
-          style={styles.input}
-          value={companyDetails.pan}
-          onChangeText={(value) => handleInputChange('pan', value)}
-          placeholder="Enter PAN"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>PAN</Text>
+          <TextInput
+            style={styles.input}
+            value={companyDetails.pan}
+            onChangeText={(value) => handleInputChange('pan', value)}
+            placeholder="Enter PAN"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Alternate Contact</Text>
-        <TextInput
-          style={styles.input}
-          value={companyDetails.alternateContact}
-          onChangeText={(value) => handleInputChange('alternateContact', value)}
-          placeholder="Enter alternate contact"
-          keyboardType="phone-pad"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Alternate Contact</Text>
+          <TextInput
+            style={styles.input}
+            value={companyDetails.alternateContact}
+            onChangeText={(value) => handleInputChange('alternateContact', value)}
+            placeholder="Enter alternate contact"
+            keyboardType="phone-pad"
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Website</Text>
-        <TextInput
-          style={styles.input}
-          value={companyDetails.website}
-          onChangeText={(value) => handleInputChange('website', value)}
-          placeholder="Enter website"
-          keyboardType="url"
-        />
-      </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Website</Text>
+          <TextInput
+            style={styles.input}
+            value={companyDetails.website}
+            onChangeText={(value) => handleInputChange('website', value)}
+            placeholder="Enter website"
+            keyboardType="url"
+          />
+        </View>
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.buttonText}>Save & Update</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.buttonText}>Save & Update</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
