@@ -14,7 +14,7 @@ export default function ProfileScreen() {
       if (!token) {
         console.log('⚠️ No token found. Redirecting to login...');
         await storage.clearAll();
-        router.replace('/(auth)/phone');
+        router.replace('/(welcome)/welcomeScreen');
         return;
       }
 
@@ -30,7 +30,7 @@ export default function ProfileScreen() {
       if (response.ok) {
         console.log('✅ Logout successful. Clearing storage...');
         await storage.clearAll();
-        router.replace('/(auth)/phone');
+        router.replace('/(welcome)/welcomeScreen');
       } else {
         const errorData = await response.json();
         console.error('❌ Logout failed:', errorData);
@@ -38,7 +38,7 @@ export default function ProfileScreen() {
         if (response.status === 401) {
           console.log('⚠️ Unauthorized. Clearing storage and redirecting...');
           await storage.clearAll();
-          router.replace('/(auth)/phone');
+          router.replace('/(welcome)/welcomeScreen');
         } else {
           Alert.alert('❗ Error', 'Failed to logout. Please try again.');
         }
