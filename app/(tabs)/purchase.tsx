@@ -60,7 +60,7 @@ export default function Purchase() {
     <View style={styles.purchaseItem}>
       <View style={styles.purchaseDetails}>
         <Text style={styles.quantityPrice}>
-          Qty: {item.quantity} | ${item.price * item.quantity}
+          Qty: {item.quantity} | ${item.price} per unit | Total: ${item.price * item.quantity}
         </Text>
         <Text style={[styles.statusText, getStatusStyle(item.status)]}>
           {item.status}

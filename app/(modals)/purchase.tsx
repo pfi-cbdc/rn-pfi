@@ -57,7 +57,7 @@ export default function PurchaseScreen() {
         vendorId: selectedVendor.id,
         productId: selectedProduct.id,
         quantity,
-        totalAmount: selectedProduct.sellingPrice * quantity,
+        unitPrice: selectedProduct.sellingPrice, // Sending unit price instead of total
       };
       const token = await storage.getToken();
       const response = await fetch(`${ENV.API_URL}/purchase/create`, {
