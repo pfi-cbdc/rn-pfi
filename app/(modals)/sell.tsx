@@ -6,48 +6,23 @@ export default function SellScreen() {
   const router = useRouter();
 
   const handleAddProducts = () => {
-    console.log('🛒 Navigating to Add Products screen...');
+    console.log('📦 Add Products button clicked. Navigating...');
     router.push('/(modals)/addProduct');
-  };
-
-  const handleCreate = () => {
-    console.log('✅ Create button clicked. Proceeding with the action...');
-    // Add logic here for the "Create" button functionality.
   };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <Stack.Screen
         options={{
-          title: 'Sell',
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: '#121212' },
-          headerTintColor: '#fff',
+          headerShown: false,
         }}
       />
       <View style={styles.content}>
-        {/* Company Details Card */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>+ Add Company Details</Text>
-        </View>
-
-        {/* Sell Details Card */}
-        <View style={styles.card}>
-          <Text style={styles.title}>Sell #</Text>
-          <Text style={styles.text}>PINV-1</Text>
-          <Text style={styles.label}>16-01-2025</Text>
-        </View>
-
-        {/* Add Products Button */}
+        <Text style={styles.heading}>Your Catalog</Text>
         <TouchableOpacity style={styles.addButton} onPress={handleAddProducts}>
           <Text style={styles.addButtonText}>+ Add Products</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Create Button */}
-      <TouchableOpacity style={styles.createButton} onPress={handleCreate}>
-        <Text style={styles.createButtonText}>Create</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -55,55 +30,29 @@ export default function SellScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
-    padding: 16,
+    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
-    justifyContent: 'space-between',
+    padding: 20,
   },
-  card: {
-    backgroundColor: '#222',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  cardTitle: {
-    fontSize: 18,
+  heading: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  label: {
-    color: '#888',
-    marginVertical: 8,
-  },
-  text: {
-    color: '#fff',
-    marginBottom: 16,
+    marginBottom: 20,
+    marginTop: 10,
+    color: '#000',
   },
   addButton: {
-    backgroundColor: '#444',
-    padding: 12,
+    backgroundColor: '#007AFF',
+    padding: 15,
     borderRadius: 8,
-    marginBottom: 16,
+    alignItems: 'center',
+    marginTop: 20,
   },
   addButtonText: {
     color: '#fff',
-    textAlign: 'center',
-  },
-  createButton: {
-    backgroundColor: '#3B82F6',
-    padding: 16,
-    borderRadius: 8,
-  },
-  createButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
