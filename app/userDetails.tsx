@@ -33,7 +33,7 @@ export default function UserDetailsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAF4EE',
   },
   container: {
     flex: 1,
@@ -46,7 +46,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   detailsCard: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FAF4EE',
+    borderColor: '#D77A61',
+    borderWidth: 1,
     padding: 20,
     borderRadius: 10,
     marginBottom: 15,
