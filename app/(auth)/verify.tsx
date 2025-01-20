@@ -89,7 +89,7 @@ export default function VerifyScreen() {
   if (showLoadingScreen) {
     return (
       <View style={styles.loadingScreen}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" color="#D77A61" />
         <Text style={styles.loadingText}>Verifying, please wait...</Text>
       </View>
     );

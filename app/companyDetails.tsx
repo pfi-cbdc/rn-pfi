@@ -94,60 +94,61 @@ export default function CompanyDetailsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
         <Text style={styles.title}>Company Details</Text>
-        
-        <View style={styles.detailsCard}>
-          <Text style={styles.label}>Phone Number</Text>
-          <Text style={styles.value}>{phoneNumber || 'Not available'}</Text>
-        </View>
+
+        <TouchableOpacity style={styles.logoContainer}>
+          <Text style={styles.logoText}>Upload Company Logo</Text>
+        </TouchableOpacity>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Company Name</Text>
+          <Text style={styles.label}>Company Name *</Text>
           <TextInput
             style={styles.input}
             value={companyDetails.companyName}
             onChangeText={(value) => handleInputChange('companyName', value)}
-            placeholder="Enter company name"
+            placeholder="Business/Company Name"
           />
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>GSTIN</Text>
+        <Text style={styles.label}>GST Number *</Text>
+        <View style={styles.inputRow}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, styles.flex]}
             value={companyDetails.gstin}
             onChangeText={(value) => handleInputChange('gstin', value)}
-            placeholder="Enter GSTIN"
+            placeholder="GST Number"
           />
+          <TouchableOpacity style={styles.fetchButton} onPress={loadCompanyDetails}>
+            <Text style={styles.fetchButtonText}>Fetch Details</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Brand Name</Text>
+          <Text style={styles.label}>Trade/Brand Name *</Text>
           <TextInput
             style={styles.input}
             value={companyDetails.brandName}
             onChangeText={(value) => handleInputChange('brandName', value)}
-            placeholder="Enter brand name"
+            placeholder="Trade/Brand Name"
           />
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email Address</Text>
+          <Text style={styles.label}>Business Email *</Text>
           <TextInput
             style={styles.input}
             value={companyDetails.email}
             onChangeText={(value) => handleInputChange('email', value)}
-            placeholder="Enter email address"
-            keyboardType="email-address"
+            placeholder="Business Email"
           />
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>PAN</Text>
+          <Text style={styles.label}>PAN *</Text>
           <TextInput
             style={styles.input}
             value={companyDetails.pan}
             onChangeText={(value) => handleInputChange('pan', value)}
-            placeholder="Enter PAN"
+            placeholder="PAN"
           />
         </View>
 
@@ -157,8 +158,7 @@ export default function CompanyDetailsScreen() {
             style={styles.input}
             value={companyDetails.alternateContact}
             onChangeText={(value) => handleInputChange('alternateContact', value)}
-            placeholder="Enter alternate contact"
-            keyboardType="phone-pad"
+            placeholder="Alternate Contact"
           />
         </View>
 
@@ -172,11 +172,11 @@ export default function CompanyDetailsScreen() {
             keyboardType="url"
           />
         </View>
+      </ScrollView>
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.buttonText}>Save & Update</Text>
         </TouchableOpacity>
-      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -184,7 +184,7 @@ export default function CompanyDetailsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAF4EE',
   },
   container: {
     flex: 1,
@@ -193,41 +193,66 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
     textAlign: 'center',
-  },
-  detailsCard: {
-    backgroundColor: '#f5f5f5',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  inputContainer: {
-    marginBottom: 15,
   },
   label: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 5,
+    marginBottom: 5
   },
-  value: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#000',
+  logoContainer: {
+    height: 120,
+    width: 120,
+    borderRadius: 60,
+    backgroundColor: '#ddd',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logoText: {
+    color: '#666',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    marginBottom: 15,
+    backgroundColor: '#FAF4EE',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#D77A61',
     borderRadius: 5,
     padding: 10,
-    fontSize: 16,
+    fontSize: 14,
+    backgroundColor: '#FAF4EE',
+  },
+  flex: {
+    flex: 1,
+  },
+  fetchButton: {
+    marginLeft: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: '#D77A61',
+    borderRadius: 5,
+  },
+  fetchButtonText: {
+    color: '#FFF',
+    fontSize: 12,
   },
   saveButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#D77A61',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 10,
   },
   buttonText: {
     color: 'white',
