@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import { storage } from '../../utils/storage';
 import ENV from '../../config/env';
@@ -54,6 +55,57 @@ export default function Products() {
     }
   }, []);
 
+  const deleteProduct = async (productId: string | number) => {
+    try {
+      const token = await storage.getToken();
+      const response = await fetch(`${ENV.API_URL}/sell/product/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('✅ Product deleted successfully');
+        // Refresh the products list
+        fetchProducts();
+      } else {
+        console.error('❌ Failed to delete product:', data.error);
+        if (data.hasPurchases) {
+          Alert.alert(
+            'Cannot Delete Product',
+            'This product has existing purchases. Please delete associated purchases first before deleting the product.'
+          );
+        } else {
+          Alert.alert('Error', data.error || 'Failed to delete product');
+        }
+      }
+    } catch (error) {
+      console.error(`⚠️ Error deleting product: ${error}`);
+      Alert.alert('Error', 'Failed to delete product');
+    }
+  };
+
+  const handleDeletePress = (product: Product) => {
+    Alert.alert(
+      'Delete Product',
+      `Are you sure you want to delete ${product.productName}?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => deleteProduct(product.id),
+        },
+      ]
+    );
+  };
+
   useEffect(() => {
     console.log('📦 Component mounted. Initiating fetch...');
     fetchProducts();
@@ -73,6 +125,20 @@ export default function Products() {
         <Text style={styles.productPrice}>₹{item.sellingPrice}</Text>
       </View>
       <Text style={styles.productQuantity}>Qty: {item.units}</Text>
+      <View style={styles.actionButtons}>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => console.log('Edit pressed')}
+        >
+          <Ionicons name="pencil" size={20} color="#007AFF" />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => handleDeletePress(item)}
+        >
+          <Ionicons name="trash" size={20} color="#FF3B30" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -176,21 +242,34 @@ const styles = StyleSheet.create({
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
-    borderRadius: 8,
+    borderRadius: 12,
   },
   productDetails: {
     flex: 1,
-    marginLeft: 16,
+    marginLeft: 12,
   },
   productName: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
   },
   productPrice: {
-    color: '#888',
+    color: '#007AFF',
+    fontSize: 14,
+    marginTop: 4,
   },
   productQuantity: {
     color: '#888',
+    fontSize: 14,
+    marginRight: 12,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  actionButton: {
+    padding: 8,
+    marginLeft: 8,
   },
   footer: {
     flexDirection: 'row',
