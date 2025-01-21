@@ -183,13 +183,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonActive: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#D77A61',
   },
   buttonInactive: {
     backgroundColor: '#B0B0B0',
   },
   buttonLoading: {
-    backgroundColor: '#4DA1FF',
+    backgroundColor: '#D77A61',
   },
   buttonText: {
     color: 'white',

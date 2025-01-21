@@ -71,13 +71,14 @@ export default function VendorsScreen() {
         options={{
           title: 'Select Vendor',
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: '#000' },
+          headerStyle: { backgroundColor: '#FAF3E7' },
+          headerTintColor: '#888',
         }}
       />
       <TextInput
         style={styles.searchBar}
         placeholder="Search by Brand or Company"
-        placeholderTextColor="#AAA"
+        placeholderTextColor="#888"
         value={search}
         onChangeText={setSearch}
       />
@@ -102,24 +103,27 @@ export default function VendorsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FAF3E7',
     padding: 16,
   },
   searchBar: {
-    backgroundColor: '#1E1E1E',
-    color: '#FFF',
+    backgroundColor: '#FAF3E7',
+    borderColor: '#D77A61',
+    borderWidth: 1,
+    color: '#888',
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
   },
   vendorItem: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#D77A61',
     padding: 16,
     borderRadius: 8,
     marginBottom: 8,
   },
   vendorText: {
-    color: '#FFF',
+    fontWeight: 'bold',
+    color: '#fff',
     fontSize: 14,
   },
   emptyListText: {

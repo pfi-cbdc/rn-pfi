@@ -95,7 +95,8 @@ export default function PurchaseScreen() {
         options={{
           title: 'Purchase',
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: '#000' },
+          headerStyle: { backgroundColor: '#FAF3E7' },
+          headerTintColor: '#888',
         }}
       />
       <View style={styles.section}>
@@ -129,7 +130,7 @@ export default function PurchaseScreen() {
           </View>
         ) : (
           <TouchableOpacity
-            style={[styles.button, !selectedVendor && { backgroundColor: '#555' }]}
+            style={[styles.button, !selectedVendor && { backgroundColor: '#D77A61' }]}
             onPress={handleSelectProduct}
             disabled={!selectedVendor}
           >
@@ -178,30 +179,30 @@ export default function PurchaseScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FAF3E7',
     padding: 16,
   },
   section: {
     marginBottom: 16,
   },
   sectionLabel: {
-    color: '#FFF',
+    color: '#888',
     fontSize: 14,
     marginBottom: 8,
   },
   button: {
-    backgroundColor: '#2E2E2E',
+    backgroundColor: '#D77A61',
     padding: 16,
     borderRadius: 8,
   },
   changeButton: {
     marginTop: 8,
-    backgroundColor: '#1E90FF',
+    backgroundColor: '#D77A61',
     padding: 12,
     borderRadius: 8,
   },
   purchaseButton: {
-    backgroundColor: '#32CD32',
+    backgroundColor: '#D77A61',
     padding: 16,
     borderRadius: 8,
     marginTop: 16,
@@ -212,17 +213,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   vendorDetails: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#FAF3E7',
+    fontWeight: 'bold',
     padding: 16,
     borderRadius: 8,
   },
   productDetails: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#FAF3E7',
+    fontWeight: 'bold',
     padding: 16,
     borderRadius: 8,
   },
   vendorText: {
-    color: '#FFF',
+    color: '#888',
+    fontWeight: 'bold',
     fontSize: 14,
   },
   quantityContainer: {
@@ -230,19 +234,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quantityButton: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#D77A61',
     padding: 12,
     borderRadius: 8,
     marginHorizontal: 8,
   },
   quantityText: {
-    color: '#FFF',
+    color: '#888',
     fontSize: 16,
     width: 40,
     textAlign: 'center',
   },
   totalText: {
-    color: '#FFF',
+    color: '#88',
     fontSize: 18,
     fontWeight: 'bold',
   },

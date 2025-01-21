@@ -14,11 +14,13 @@ export default function SellScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       <Stack.Screen
         options={{
-          headerShown: false,
+          title: 'Your Catalog',
+          headerShadowVisible: true,
+          headerStyle: { backgroundColor: '#FAF3E7' },
+          headerTintColor: '#888',
         }}
       />
       <View style={styles.content}>
-        <Text style={styles.heading}>Your Catalog</Text>
         <TouchableOpacity style={styles.addButton} onPress={handleAddProducts}>
           <Text style={styles.addButtonText}>+ Add Products</Text>
         </TouchableOpacity>
@@ -30,7 +32,7 @@ export default function SellScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAF3E7',
   },
   content: {
     flex: 1,
@@ -41,10 +43,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     marginTop: 10,
-    color: '#000',
+    color: '#888',
   },
   addButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#D77A61',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',

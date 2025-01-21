@@ -51,8 +51,8 @@ export default function AddProductList() {
         options={{
           title: 'Add Product List',
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: '#121212' },
-          headerTintColor: '#fff',
+          headerStyle: { backgroundColor: '#FAF3E7' },
+          headerTintColor: '#888',
         }}
       />
       <TextInput
@@ -88,11 +88,11 @@ export default function AddProductList() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#121212', padding: 16 },
-  search: { backgroundColor: '#222', padding: 12, borderRadius: 8, color: '#fff', marginBottom: 16 },
+  container: { flex: 1, backgroundColor: '#FAF3E7', padding: 16 },
+  search: { backgroundColor: '#FAF3E7', padding: 12, borderRadius: 8, color: '#888', borderWidth: 1, borderColor: '#D77A61', marginBottom: 16 },
   product: { padding: 12, borderBottomWidth: 1, borderBottomColor: '#333' },
-  productText: { color: '#fff' },
-  addButton: { backgroundColor: '#3B82F6', padding: 16, borderRadius: 8, marginTop: 20 },
+  productText: { color: '#888' },
+  addButton: { backgroundColor: '#D77A61', padding: 16, borderRadius: 8, marginTop: 20 },
   addButtonText: { color: '#fff', textAlign: 'center', fontWeight: 'bold' },
   loadingText: { color: '#888', textAlign: 'center', marginTop: 20 },
 });
