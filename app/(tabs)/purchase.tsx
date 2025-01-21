@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,6 +29,9 @@ interface Purchase {
   product?: {
     productName: string;
   };
+  buyer?: {
+    phoneNumber: string;
+  };
 }
 
 export default function Purchase() {
@@ -37,19 +41,23 @@ export default function Purchase() {
   const [activeTab, setActiveTab] = useState<'purchases' | 'sales'>('purchases');
   const [statusFilter, setStatusFilter] = useState<Purchase['status'] | 'ALL'>('ALL');
 
-  const filteredPurchases = purchases.filter(purchase => 
-    statusFilter === 'ALL' ? true : purchase.status === statusFilter
-  );
-
-  const fetchPurchases = async () => {
+  const fetchData = async () => {
     setLoading(true);
-    console.log('🚀 Fetching purchases...');
+    console.log(`🚀 Fetching ${activeTab}...`);
     try {
       const token = await storage.getToken();
       console.log('🔑 Retrieved token:', token);
-      const endpoint = statusFilter === 'ALL' 
-        ? `${ENV.API_URL}/purchase/all`
-        : `${ENV.API_URL}/purchase/status/${statusFilter}`;
+      
+      let endpoint;
+      if (activeTab === 'sales') {
+        endpoint = statusFilter === 'ALL'
+          ? `${ENV.API_URL}/purchase/vendor/sales`
+          : `${ENV.API_URL}/purchase/status/${statusFilter}?type=sale`;
+      } else {
+        endpoint = statusFilter === 'ALL'
+          ? `${ENV.API_URL}/purchase/all`
+          : `${ENV.API_URL}/purchase/status/${statusFilter}?type=purchase`;
+      }
       
       const response = await fetch(endpoint, {
         method: 'GET',
@@ -57,15 +65,17 @@ export default function Purchase() {
           Authorization: `Bearer ${token}`,
         },
       });
+      
       if (!response.ok) {
-        console.error('❌ Failed to fetch purchases. Status:', response.status);
+        console.error(`❌ Failed to fetch ${activeTab}. Status:`, response.status);
         return;
       }
+      
       const data = await response.json();
-      console.log('✅ Purchases fetched successfully:');
+      console.log(`✅ ${activeTab} fetched successfully:`);
       setPurchases(data);
     } catch (error: any) {
-      console.error('⚠️ Error fetching purchases:', error.message);
+      console.error(`⚠️ Error fetching ${activeTab}:`, error.message);
     } finally {
       setLoading(false);
       console.log('✨ Fetch complete.');
@@ -73,14 +83,14 @@ export default function Purchase() {
   };
 
   useEffect(() => {
-    console.log('📂 Component mounted or status filter changed. Fetching purchases...');
-    fetchPurchases();
-  }, [statusFilter]); // Re-fetch when status filter changes
+    console.log('📂 Tab or filter changed. Fetching data...');
+    fetchData();
+  }, [activeTab, statusFilter]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    console.log('🔄 Refreshing purchases...');
-    await fetchPurchases();
+    console.log('🔄 Refreshing data...');
+    await fetchData();
     setRefreshing(false);
     console.log('🔁 Refresh complete.');
   };
@@ -103,30 +113,41 @@ export default function Purchase() {
         throw new Error('Failed to update status');
       }
 
-      // Update the local state
-      setPurchases(prevPurchases => 
-        prevPurchases.map(purchase => 
-          purchase.id === purchaseId 
-            ? { ...purchase, status: newStatus }
-            : purchase
-        )
-      );
+      // Refresh the data to get the updated status
+      fetchData();
     } catch (error) {
-      console.error('Error updating purchase status:', error);
-      Alert.alert('Error', 'Failed to update purchase status');
+      console.error('Error updating status:', error);
+      Alert.alert('Error', 'Failed to update status');
     }
   };
 
-  const renderPurchaseItem = ({ item }: { item: Purchase }) => (
+  const renderItem = ({ item }: { item: Purchase }) => (
     <View style={styles.purchaseItem}>
       <View style={styles.purchaseDetails}>
-        {item.vendor && (
-          <Text style={styles.vendorName}>
-            {item.vendor.brandName} ({item.vendor.companyName})
-          </Text>
-        )}
-        {item.product && (
-          <Text style={styles.productName}>{item.product.productName}</Text>
+        {activeTab === 'purchases' ? (
+          // Purchase view
+          <>
+            {item.vendor && (
+              <Text style={styles.vendorName}>
+                {item.vendor.brandName} ({item.vendor.companyName})
+              </Text>
+            )}
+            {item.product && (
+              <Text style={styles.productName}>{item.product.productName}</Text>
+            )}
+          </>
+        ) : (
+          // Sale view
+          <>
+            {item.buyer && (
+              <Text style={styles.buyerName}>
+                Buyer: {item.buyer.phoneNumber}
+              </Text>
+            )}
+            {item.product && (
+              <Text style={styles.productName}>{item.product.productName}</Text>
+            )}
+          </>
         )}
         <Text style={styles.quantityPrice}>
           Qty: {item.quantity} | Unit: ₹{item.price} | Total: ₹{item.quantity * item.price}
@@ -135,6 +156,7 @@ export default function Purchase() {
           {item.status}
         </Text>
       </View>
+      {/* Show action buttons only for PENDING items */}
       {item.status === 'PENDING' && (
         <View style={styles.actionButtons}>
           <TouchableOpacity 
@@ -177,7 +199,10 @@ export default function Purchase() {
             styles.toggleButton,
             activeTab === 'purchases' && styles.activeToggle,
           ]}
-          onPress={() => setActiveTab('purchases')}
+          onPress={() => {
+            setActiveTab('purchases');
+            setStatusFilter('ALL');
+          }}
         >
           <Text style={[
             styles.toggleText,
@@ -189,7 +214,10 @@ export default function Purchase() {
             styles.toggleButton,
             activeTab === 'sales' && styles.activeToggle,
           ]}
-          onPress={() => setActiveTab('sales')}
+          onPress={() => {
+            setActiveTab('sales');
+            setStatusFilter('ALL');
+          }}
         >
           <Text style={[
             styles.toggleText,
@@ -198,49 +226,42 @@ export default function Purchase() {
         </TouchableOpacity>
       </View>
 
-      {activeTab === 'purchases' && (
-        <View style={styles.filterContainer}>
-          {(['ALL', 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED'] as const).map((status) => (
-            <TouchableOpacity
-              key={status}
-              style={[
-                styles.filterButton,
-                statusFilter === status && styles.activeFilterButton
-              ]}
-              onPress={() => setStatusFilter(status)}
-            >
-              <Text style={[
-                styles.filterButtonText,
-                statusFilter === status && styles.activeFilterButtonText
-              ]}>
-                {status === 'ALL' ? 'All' : status.charAt(0) + status.slice(1).toLowerCase()}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
-
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          {activeTab === 'purchases' ? 'My Purchases' : 'My Sales'}
-        </Text>
-        <TouchableOpacity onPress={fetchPurchases}>
-          <Ionicons name="refresh" size={24} color="#888" />
-        </TouchableOpacity>
+      <View style={styles.filterContainer}>
+        {(['ALL', 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED'] as const).map((status) => (
+          <TouchableOpacity
+            key={status}
+            style={[
+              styles.filterButton,
+              statusFilter === status && styles.activeFilterButton
+            ]}
+            onPress={() => setStatusFilter(status)}
+          >
+            <Text style={[
+              styles.filterButtonText,
+              statusFilter === status && styles.activeFilterButtonText
+            ]}>
+              {status === 'ALL' ? 'All' : status.charAt(0) + status.slice(1).toLowerCase()}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       {loading ? (
-        <Text style={styles.loadingText}>Loading purchases...</Text>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#D77A61" />
+          <Text style={styles.loadingText}>Loading {activeTab}...</Text>
+        </View>
       ) : (
         <FlatList
-          data={filteredPurchases}
-          renderItem={renderPurchaseItem}
+          data={purchases}
+          renderItem={renderItem}
           keyExtractor={(item) => item.id}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
+          contentContainerStyle={styles.listContainer}
           ListEmptyComponent={
-            <Text style={styles.emptyText}>No purchases found.</Text>
+            <Text style={styles.emptyText}>No {activeTab} found</Text>
           }
         />
       )}
@@ -288,28 +309,33 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontWeight: '600',
   },
-  header: {
+  filterContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#FAF3E7',
+    gap: 8,
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  filterButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    backgroundColor: '#EAEAEA',
+    borderWidth: 1,
+    borderColor: '#EAEAEA',
   },
-  loadingText: {
-    color: '#FFF',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 20,
+  activeFilterButton: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#4A90E2',
   },
-  emptyText: {
-    color: '#888',
-    fontWeight: 'bold',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 20,
+  filterButtonText: {
+    fontSize: 12,
+    color: '#666666',
+    fontWeight: '500',
+  },
+  activeFilterButtonText: {
+    color: '#4A90E2',
+    fontWeight: '600',
   },
   purchaseItem: {
     flexDirection: 'row',
@@ -325,6 +351,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   vendorName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  buyerName: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
@@ -382,32 +414,23 @@ const styles = StyleSheet.create({
   statusFailed: {
     color: '#FF6347',
   },
-  filterContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#FAF3E7',
-    gap: 8,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  filterButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: '#EAEAEA',
-    borderWidth: 1,
-    borderColor: '#EAEAEA',
+  loadingText: {
+    color: '#666',
+    fontSize: 16,
+    marginTop: 20,
   },
-  activeFilterButton: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#4A90E2',
+  emptyText: {
+    textAlign: 'center',
+    color: '#666',
+    marginTop: 20,
+    fontSize: 16,
   },
-  filterButtonText: {
-    fontSize: 12,
-    color: '#666666',
-    fontWeight: '500',
-  },
-  activeFilterButtonText: {
-    color: '#4A90E2',
-    fontWeight: '600',
+  listContainer: {
+    paddingVertical: 16,
   },
 });
