@@ -84,8 +84,8 @@ export default function NewProduct() {
         options={{
           title: 'Add New Product',
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: '#121212' },
-          headerTintColor: '#fff',
+          headerStyle: { backgroundColor: '#FAF3E7' },
+          headerTintColor: '#888',
         }}
       />
       <View>
@@ -108,7 +108,7 @@ export default function NewProduct() {
           style={styles.input}
           onPress={() => setShowUnitModal(true)}
         >
-          <Text style={{ color: '#fff' }}>{units}</Text>
+          <Text style={{ color: '#888' }}>{units}</Text>
         </TouchableOpacity>
 
         <Modal
@@ -164,23 +164,23 @@ export default function NewProduct() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#FAF3E7',
     padding: 16,
   },
   input: {
-    backgroundColor: '#222',
+    backgroundColor: '#FAF3E7',
     padding: 12,
     borderRadius: 8,
     marginVertical: 8,
-    color: '#fff',
+    color: '#888',
   },
   modalOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: '#FAF3E7',
   },
   modalContent: {
-    backgroundColor: '#222',
+    backgroundColor: '#FAF3E7',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 16,
@@ -188,15 +188,15 @@ const styles = StyleSheet.create({
   unitOption: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: '#888',
   },
   unitText: {
-    color: '#fff',
+    color: '#D77A61',
     fontSize: 16,
     textAlign: 'center',
   },
   uploadButton: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#D77A61',
     padding: 12,
     borderRadius: 8,
     marginVertical: 8,
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   addButton: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#D77A61',
     padding: 16,
     borderRadius: 8,
     marginTop: 20,

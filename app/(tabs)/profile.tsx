@@ -1,10 +1,39 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import ENV from '../../config/env';
 import { storage } from '../../utils/storage';
+import { useState, useEffect } from 'react';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const [brandName, setBrandName] = useState('Your Company Name');
+
+  const loadCompanyDetails = async () => {
+    try {
+      console.log('📡 Fetching company details...');
+      const token = await storage.getToken();
+      const response = await fetch(`${ENV.API_URL}/company/details`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setBrandName(data.brandName);
+        console.log('✅ Company details loaded successfully:', data);
+      } else {
+        console.log('❌ Failed to fetch company details:', response.status);
+      }
+    } catch (error) {
+      console.error('⚠️ Error loading company details:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadCompanyDetails();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -22,7 +51,7 @@ export default function ProfileScreen() {
       const response = await fetch(`${ENV.API_URL}/users/logout`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
@@ -51,17 +80,14 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
+      <View style={styles.header}>
+        <Text style={styles.businessName}>{brandName}</Text>
+        <TouchableOpacity style={styles.notificationButton} onPress={() => console.log('🔔 Notification clicked!')}>
+          <Ionicons name="notifications-outline" size={20} color="#333" />
+        </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          console.log('👤 Navigating to User Profile...');
-          router.push('/userDetails');
-        }}
-      >
-        <Text style={styles.buttonText}>User Profile</Text>
-      </TouchableOpacity>
+      <Text style={styles.sectionTitle}>Profile</Text>
 
       <TouchableOpacity
         style={styles.button}
@@ -71,6 +97,16 @@ export default function ProfileScreen() {
         }}
       >
         <Text style={styles.buttonText}>Company Details</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          console.log('👤 Navigating to User Profile...');
+          router.push('/userDetails');
+        }}
+      >
+        <Text style={styles.buttonText}>User Profile</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -86,19 +122,39 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FAF3E7',
   },
-  title: {
-    fontSize: 28,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop: 20,
+  },
+  businessName: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 30,
     color: '#333',
   },
+  notificationButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#E6E6E6',
+    borderRadius: 20,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    marginTop: 10,
+    color: '#333',
+    textAlign: 'center',
+  },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#D77A61',
     padding: 15,
     borderRadius: 10,
     width: '100%',
@@ -119,7 +175,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   logoutButton: {
-    backgroundColor: '#ff4444',
+    backgroundColor: '#D77A61',
     marginTop: 20,
   },
   logoutButtonText: {

@@ -103,7 +103,7 @@ export default function Purchase() {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Purchases</Text>
         <TouchableOpacity onPress={fetchPurchases}>
-          <Ionicons name="refresh" size={24} color="#FFF" />
+          <Ionicons name="refresh" size={24} color="#D77A61" />
         </TouchableOpacity>
       </View>
       {loading ? (
@@ -128,7 +128,7 @@ export default function Purchase() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FAF3E7',
     padding: 16,
   },
   header: {
@@ -139,7 +139,6 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    color: '#FFF',
     fontWeight: 'bold',
   },
   loadingText: {
@@ -149,7 +148,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   emptyText: {
-    color: '#FFF',
+    color: '#888',
+    fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',
     marginTop: 20,
@@ -158,7 +158,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#FAF3E7',
+    fontWeight: 'bold',
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
@@ -167,27 +168,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productName: {
-    color: '#FFF',
+    color: '#888',
     fontSize: 16,
     fontWeight: 'bold',
   },
   companyName: {
-    color: '#AAA',
+    color: '#888',
     fontSize: 14,
     marginVertical: 4,
   },
   quantityPrice: {
-    color: '#FFF',
+    color: '#888',
+    fontWeight: 'bold',
     fontSize: 14,
   },
   viewButton: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: '#D77A61',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
   },
   viewButtonText: {
-    color: '#FFF',
+    color: '#fff',
     fontSize: 14,
     textAlign: 'center',
   },

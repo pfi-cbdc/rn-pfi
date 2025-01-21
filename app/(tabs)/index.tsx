@@ -1,9 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
-import { useEffect, useState } from 'react';
-import { storage } from '../../utils/storage';
-import ENV from '../../config/env';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { storage } from '../../utils/storage';
+import ENV from '../../config/env';
 
 export default function HomeScreen() {
   const [brandName, setBrandName] = useState('');
@@ -18,7 +19,7 @@ export default function HomeScreen() {
       const token = await storage.getToken();
       const response = await fetch(`${ENV.API_URL}/company/details`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -50,7 +51,7 @@ export default function HomeScreen() {
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hello! I need assistance with PFI app.`;
 
     Linking.canOpenURL(whatsappUrl)
-      .then(supported => {
+      .then((supported) => {
         if (supported) {
           console.log('✅ WhatsApp is supported. Opening...');
           return Linking.openURL(whatsappUrl);
@@ -58,7 +59,7 @@ export default function HomeScreen() {
           console.log('❌ WhatsApp is not installed or URL is unsupported.');
         }
       })
-      .catch(err => console.error('⚠️ Error opening WhatsApp:', err));
+      .catch((err) => console.error('⚠️ Error opening WhatsApp:', err));
   };
 
   return (
@@ -68,15 +69,20 @@ export default function HomeScreen() {
         <Text style={styles.pfiText}>PFI</Text>
       </View>
       <View style={styles.content}>
-        <TouchableOpacity style={styles.button} onPress={handleSell}>
-          <Text style={styles.buttonText}>Sell</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.purchaseButton]} onPress={handlePurchase}>
-          <Text style={styles.buttonText}>Purchase</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.helpButton]} onPress={handleHelp}>
-          <Text style={styles.buttonText}>Help</Text>
-        </TouchableOpacity>
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.squareButton} onPress={handleSell}>
+            <Ionicons name="cart-outline" size={32} color="#fff" />
+            <Text style={styles.buttonText}>Sell</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.squareButton} onPress={handlePurchase}>
+            <Ionicons name="cube-outline" size={32} color="#fff" />
+            <Text style={styles.buttonText}>Purchase</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.squareButton} onPress={handleHelp}>
+            <Ionicons name="help-circle-outline" size={32} color="#fff" />
+            <Text style={styles.buttonText}>Help</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -85,7 +91,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAF3E7',
   },
   header: {
     flexDirection: 'row',
@@ -108,25 +114,37 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 20,
   },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 8,
-    width: '80%',
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 20,
   },
-  purchaseButton: {
-    backgroundColor: '#34C759',
-  },
-  helpButton: {
-    backgroundColor: '#FF9500',
+  squareButton: {
+    backgroundColor: '#D77A61',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 100,
+    height: 100,
+    marginHorizontal: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
+    marginTop: 8,
+    textAlign: 'center',
   },
 });

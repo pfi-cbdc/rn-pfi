@@ -100,7 +100,7 @@ export default function SelectProductScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Stack.Screen options={{ title: 'Select Product', headerStyle: { backgroundColor: '#000' } }} />
+      <Stack.Screen options={{ title: 'Select Product', headerStyle: { backgroundColor: '#FAF3E7' }, headerTintColor: '#888' }} />
       <FlatList
         data={products}
         keyExtractor={(item) => item.id}
@@ -122,11 +122,11 @@ export default function SelectProductScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FAF3E7',
     padding: 16,
   },
   loadingText: {
-    color: '#FFF',
+    color: '#888',
     textAlign: 'center',
     fontSize: 16,
   },
@@ -136,17 +136,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   productItem: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#FAF3E7',
     padding: 16,
     borderRadius: 8,
     marginBottom: 8,
   },
   productText: {
-    color: '#FFF',
+    fontWeight: 'bold',
+    color: '#888',
     fontSize: 14,
   },
   emptyListText: {
-    color: '#FFF',
+    color: '#888',
+    fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 14,
     marginTop: 20,

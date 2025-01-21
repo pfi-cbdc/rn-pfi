@@ -130,7 +130,7 @@ export default function Products() {
           style={styles.actionButton}
           onPress={() => console.log('Edit pressed')}
         >
-          <Ionicons name="pencil" size={20} color="#007AFF" />
+          <Ionicons name="pencil" size={20} color="#888" />
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.actionButton}
@@ -177,7 +177,7 @@ export default function Products() {
                 Manage and organize products in Batches for seamless inventory
                 management.
               </Text> */}
-              <Ionicons name="headset" size={24} color="#007AFF" />
+              <Ionicons name="headset" size={24} color="#D77A61" />
             </View>
           }
         />
@@ -200,7 +200,7 @@ export default function Products() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#FAF3E7',
   },
   header: {
     flexDirection: 'row',
@@ -210,10 +210,12 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    backgroundColor: '#222',
+    backgroundColor: '#FAF3E7',
     borderRadius: 8,
+    borderWidth: 1,
     padding: 10,
-    color: '#fff',
+    color: '#888',
+    borderBottomColor: '#D77A61'
   },
   searchIcon: {
     marginLeft: 8,
@@ -227,18 +229,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: '#D77A61',
   },
   sortLabel: {
     color: '#888',
   },
   sortValue: {
-    color: '#fff',
+    color: '#888',
   },
   productCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#222',
+    backgroundColor: '#FAF3E7',
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
@@ -249,12 +251,12 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   productName: {
-    color: '#fff',
+    color: '#888',
     fontSize: 16,
     fontWeight: '600',
   },
   productPrice: {
-    color: '#007AFF',
+    color: '#888',
     fontSize: 14,
     marginTop: 4,
   },
@@ -274,14 +276,14 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#333',
+    backgroundColor: '#FAF3E7',
     padding: 16,
     marginHorizontal: 16,
     borderRadius: 8,
     marginTop: 16,
   },
   footerTitle: {
-    color: '#fff',
+    color: '#888',
     fontWeight: 'bold',
     marginRight: 8,
   },
@@ -293,7 +295,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#D77A61',
     padding: 16,
     borderRadius: 30,
     position: 'absolute',

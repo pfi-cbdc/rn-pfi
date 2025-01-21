@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#D4A373',
+    backgroundColor: '#FAF3E7',
   },
   textContainer: {
     flexDirection: 'row',
